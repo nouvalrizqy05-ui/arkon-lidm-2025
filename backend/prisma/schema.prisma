@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(STUDENT)
+  createdAt DateTime @default(now())
+  
+  progress    Progress[]
+  quizResults QuizResult[]
+}
+
+model Topic {
+  id          Int    @id @default(autoincrement())
+  slug        String @unique
+  title       String
+  description String
+  markerImage String
+  arContent   Json
+  order       Int
+
+  quizzes  Quiz[]
+  progress Progress[]
+}
+
+model Quiz {
+  id       Int    @id @default(autoincrement())
+  topicId  Int
+  question String
+  options  Json
+  answer   String
+
+  topic   Topic        @relation(fields: [topicId], references: [id])
+  results QuizResult[]
+}
+
+model QuizResult {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  quizId    Int
+  isCorrect Boolean
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+  quiz Quiz @relation(fields: [quizId], references: [id])
+}
+
+model Progress {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  topicId     Int
+  isCompleted Boolean  @default(false)
+  viewCount   Int      @default(0)
+  lastViewed  DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id])
+  topic Topic @relation(fields: [topicId], references: [id])
+
+  @@unique([userId, topicId])
+}
+
+enum Role {
+  STUDENT
+  LECTURER
+  ADMIN
+}
