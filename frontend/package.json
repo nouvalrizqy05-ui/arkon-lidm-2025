@@ -13,10 +13,14 @@
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.0",
     "aframe": "^1.7.1",
+    "ar.js": "^2.2.2",
     "axios": "^1.15.2",
+    "framer-motion": "^12.4.2",
+    "lucide-react": "^1.11.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.2",
+    "reactflow": "^11.11.4",
     "three": "^0.184.0"
   },
   "devDependencies": {

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>ARKON - Detailed U-Pipeline AR</title>
+  <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{overflow:hidden;background:#020617;font-family:sans-serif}
+    #header{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(15,23,42,0.95);backdrop-filter:blur(10px);padding:15px 25px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(14,165,233,0.3)}
+    #header h1{color:#38bdf8;font-size:20px;font-weight:bold}
+    #back-btn{background:#0ea5e9;color:white;border:none;padding:10px 20px;border-radius:12px;cursor:pointer;font-size:14px;font-weight:bold;text-decoration:none}
+    
+    #workflow-card{position:fixed;top:90px;right:20px;z-index:9998;background:rgba(15,23,42,0.95);backdrop-filter:blur(15px);border:1px solid rgba(14,165,233,0.3);border-radius:16px;padding:20px;width:340px;color:white;box-shadow:0 10px 30px rgba(0,0,0,0.6);font-size:11px;line-height:1.6}
+    #workflow-card h5{color:#38bdf8;font-size:14px;margin-bottom:12px;text-transform:uppercase;font-weight:bold;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:8px}
+    .flow-step{margin-bottom:12px;display:flex;gap:12px;align-items:flex-start}
+    .flow-num{background:#0ea5e9;color:white;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:bold;flex-shrink:0;margin-top:2px}
+    .flow-text b{color:#38bdf8;display:block;margin-bottom:2px}
+
+    #info-card{position:fixed;top:100px;left:20px;z-index:9999;background:rgba(15,23,42,0.98);border:1px solid #0ea5e9;border-radius:16px;padding:20px;display:none;color:white;width:320px;box-shadow:0 10px 40px rgba(0,0,0,1)}
+    #info-card h4{font-size:16px;margin-bottom:8px;color:#38bdf8}
+
+    #ui-controls{position:fixed;bottom:100px;left:20px;right:20px;z-index:9999;display:flex;gap:5px;justify-content:center}
+    .ui-btn{background:rgba(30,41,59,1);color:white;border:1px solid rgba(255,255,255,0.1);padding:12px;border-radius:10px;font-size:10px;font-weight:bold;flex:1;text-align:center}
+
+    #footer{position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(15,23,42,1);padding:12px;text-align:center;color:#94a3b8;font-size:13px}
+  </style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1>🌀 Advanced U-Pipeline</h1>
+    <p>5-Stage Execution Flow (v5.0)</p>
+  </div>
+  <a href="javascript:history.back()" id="back-btn">← KEMBALI</a>
+</div>
+
+<div id="info-card">
+  <h4 id="info-title">Detail Tahapan</h4>
+  <p id="info-desc"></p>
+</div>
+
+<!-- Detailed Workflow Explanation Card -->
+<div id="workflow-card">
+  <h5>Alur Kerja CPU Pipeline</h5>
+  <div class="flow-step">
+    <div class="flow-num">1</div>
+    <div class="flow-text"><b>IF (Fetch)</b>Ambil instruksi dari RAM.</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">2</div>
+    <div class="flow-text"><b>ID (Decode)</b>Terjemahkan instruksi & siapkan data.</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">3</div>
+    <div class="flow-text"><b>EX (Execute)</b>Eksekusi operasi logika/matematika.</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">4</div>
+    <div class="flow-text"><b>MEM (Memory)</b>Akses memori (Load/Store data).</div>
+  </div>
+  <div class="flow-step">
+    <div class="flow-num">5</div>
+    <div class="flow-text"><b>WB (Writeback)</b>Simpan hasil ke Register CPU.</div>
+  </div>
+</div>
+
+<div id="ui-controls">
+  <div class="ui-btn" onclick="toggleInfo('if')">IF</div>
+  <div class="ui-btn" onclick="toggleInfo('id')">ID</div>
+  <div class="ui-btn" onclick="toggleInfo('ex')">ALU</div>
+  <div class="ui-btn" onclick="toggleInfo('mem')">MEM</div>
+  <div class="ui-btn" onclick="toggleInfo('wb')">REG</div>
+</div>
+
+<a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+  <a-marker preset="hiro">
+    <!-- SOLID PCB BASE -->
+    <a-box position="0 -0.1 0" width="6.0" height="0.1" depth="4.0" color="#1e293b"></a-box>
+
+    <!-- COMPONENTS -->
+    <a-entity id="stg-if" position="-2.2 0.5 -1.2">
+        <a-box width="1.0" height="0.6" depth="1.0" color="#0ea5e9" id="mesh-if">
+            <a-text value="IF" align="center" position="0 0.35 0" rotation="-90 0 0" color="#fff"></a-text>
+        </a-box>
+    </a-entity>
+
+    <a-entity id="stg-id" position="0 0.5 -1.2">
+        <a-box width="1.0" height="0.6" depth="1.0" color="#22c55e" id="mesh-id">
+            <a-text value="ID" align="center" position="0 0.35 0" rotation="-90 0 0" color="#fff"></a-text>
+        </a-box>
+    </a-entity>
+
+    <a-entity id="stg-ex" position="2.2 0.6 -1.2">
+        <a-box width="1.2" height="0.8" depth="1.2" color="#f59e0b" id="mesh-ex">
+            <a-text value="ALU\n(EX)" align="center" position="0 0.45 0" rotation="-90 0 0" color="#fff" scale="0.8 0.8 0.8"></a-text>
+        </a-box>
+    </a-entity>
+
+    <a-entity id="stg-mem" position="2.2 0.5 1.2">
+        <a-box width="1.0" height="0.6" depth="1.0" color="#ef4444" id="mesh-mem">
+            <a-text value="MEM" align="center" position="0 0.35 0" rotation="-90 0 0" color="#fff"></a-text>
+        </a-box>
+    </a-entity>
+
+    <a-entity id="stg-wb" position="-0.5 0.5 1.2">
+        <a-box width="1.5" height="0.6" depth="0.8" color="#8b5cf6" id="mesh-wb">
+            <a-text value="REGISTERS\n(WB)" align="center" position="0 0.35 0" rotation="-90 0 0" color="#fff" scale="0.7 0.7 0.7"></a-text>
+        </a-box>
+    </a-entity>
+
+    <!-- SOLID ROD BUS (PIPES) -->
+    <a-cylinder position="0 0.1 -1.2" rotation="0 0 90" radius="0.1" height="4.5" color="#475569"></a-cylinder>
+    <a-cylinder position="2.2 0.1 0" rotation="90 0 0" radius="0.1" height="2.4" color="#475569"></a-cylinder>
+    <a-cylinder position="0.85 0.1 1.2" rotation="0 0 90" radius="0.1" height="2.8" color="#475569"></a-cylinder>
+
+    <!-- FLOWING PARTICLES -->
+    <a-sphere radius="0.15" color="#ffffff" data-flow-path="[-2.2, 0.1, -1.2], [0, 0.1, -1.2], [2.2, 0.1, -1.2], [2.2, 0.1, 1.2], [-0.5, 0.1, 1.2]" flow-particle="dur: 4000; delay: 0"></a-sphere>
+    <a-sphere radius="0.15" color="#38bdf8" data-flow-path="[-2.2, 0.1, -1.2], [0, 0.1, -1.2], [2.2, 0.1, -1.2], [2.2, 0.1, 1.2], [-0.5, 0.1, 1.2]" flow-particle="dur: 4000; delay: 1000"></a-sphere>
+    <a-sphere radius="0.15" color="#4ade80" data-flow-path="[-2.2, 0.1, -1.2], [0, 0.1, -1.2], [2.2, 0.1, -1.2], [2.2, 0.1, 1.2], [-0.5, 0.1, 1.2]" flow-particle="dur: 4000; delay: 2000"></a-sphere>
+
+  </a-marker>
+  <a-entity camera></a-entity>
+</a-scene>
+
+<script>
+  // Register custom component for flowing particles in A-Frame 1.4.0+
+  AFRAME.registerComponent('flow-particle', {
+    schema: {
+        dur: { type: 'number', default: 5000 },
+        delay: { type: 'number', default: 0 }
+    },
+    init: function () {
+        this.path = JSON.parse('[' + this.el.getAttribute('data-flow-path') + ']');
+        this.currentIndex = 0;
+        this.el.setAttribute('visible', false);
+        setTimeout(() => {
+            this.el.setAttribute('visible', true);
+            this.move();
+        }, this.data.delay);
+    },
+    move: function () {
+        const nextIndex = (this.currentIndex + 1) % this.path.length;
+        const startPos = this.path[this.currentIndex];
+        const endPos = this.path[nextIndex];
+        
+        // Reset to start if finished loop
+        if (this.currentIndex === this.path.length - 1) {
+            this.currentIndex = 0;
+            this.move();
+            return;
+        }
+
+        this.el.setAttribute('position', { x: startPos[0], y: startPos[1], z: startPos[2] });
+        
+        this.el.setAttribute('animation', {
+            property: 'position',
+            to: { x: endPos[0], y: endPos[1], z: endPos[2] },
+            dur: this.data.dur / (this.path.length - 1),
+            easing: 'linear'
+        });
+
+        this.el.addEventListener('animationcomplete', () => {
+            this.currentIndex++;
+            this.move();
+        }, { once: true });
+    }
+  });
+
+  const infoData = {
+    if: { title: "Instruction Fetch (IF)", desc: "Unit pengambil kode instruksi biner dari RAM sistem berdasarkan alamat Program Counter." },
+    id: { title: "Instruction Decode (ID)", desc: "Menerjemahkan instruksi menjadi operasi spesifik dan menyiapkan operan data dari register." },
+    ex: { title: "Execute (ALU)", desc: "Pusat eksekusi di mana kalkulasi matematika dan operasi logika dilakukan secara fisik." },
+    mem: { title: "Memory Access (MEM)", desc: "Mengelola akses ke memori data utama untuk operasi Load (ambil) atau Store (simpan)." },
+    wb: { title: "Write Back (Registers)", desc: "Menyimpan hasil akhir pemrosesan kembali ke Register CPU untuk digunakan instruksi berikutnya." }
+  };
+
+  function toggleInfo(key) {
+    const card = document.getElementById('info-card');
+    const title = document.getElementById('info-title');
+    const desc = document.getElementById('info-desc');
+    title.textContent = infoData[key].title;
+    desc.textContent = infoData[key].desc;
+    card.style.display = 'block';
+    
+    const mesh = document.getElementById('mesh-' + key);
+    mesh.setAttribute('animation__pulse', 'property: scale; from: 1 1 1; to: 1.3 1.3 1.3; dur: 300; dir: alternate; loop: 2');
+    
+    setTimeout(() => { card.style.display = 'none'; }, 8000);
+  }
+</script>
+</body>
+</html>

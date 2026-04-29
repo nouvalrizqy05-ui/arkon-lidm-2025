@@ -18,11 +18,12 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// Routes (akan ditambah bertahap)
-// app.use('/api/auth', require('./routes/auth'));
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/ai', require('./routes/ai'));
 // app.use('/api/topics', require('./routes/topics'));
 // app.use('/api/quiz', require('./routes/quiz'));
-// app.use('/api/progress', require('./routes/progress'));
+app.use('/api/progress', require('./routes/progress'));
 
 app.listen(PORT, () => {
   console.log(`🚀 ARKON Backend running on port ${PORT}`);

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <title>ARKON - Logic Gates Precision</title>
+  <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.4.5/aframe/build/aframe-ar.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{overflow:hidden;background:#000;font-family:sans-serif}
+    #header{position:fixed;top:0;left:0;right:0;z-index:9999;background:rgba(15,23,42,0.9);padding:15px;color:#38bdf8;text-align:center;border-bottom:1px solid #38bdf8}
+    #reticle{position:fixed;top:50%;left:50%;width:20px;height:20px;border:2px solid #38bdf8;border-radius:50%;transform:translate(-50%,-50%);z-index:10000;pointer-events:none}
+    #reticle::after{content:'';position:absolute;top:50%;left:50%;width:4px;height:4px;background:#38bdf8;border-radius:50%;transform:translate(-50%,-50%)}
+    #instruction{position:fixed;bottom:100px;left:0;right:0;text-align:center;color:#38bdf8;z-index:9999;font-size:12px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;pointer-events:none;text-shadow:0 2px 4px rgba(0,0,0,0.8)}
+    #debug-ui{position:fixed;bottom:20px;left:20px;z-index:9999;background:rgba(15,23,42,0.9);color:#0f0;padding:10px;font-family:monospace;font-size:11px;border-radius:8px;border:1px solid #38bdf8;width:260px}
+  </style>
+</head>
+<body>
+
+<div id="header"><h1>🧩 Digital Logic Lab</h1></div>
+<div id="reticle"></div>
+<div id="instruction">Arahkan titik tengah ke IC & Tap layar</div>
+<div id="debug-ui">STATUS: MENUNGGU...</div>
+
+<a href="javascript:history.back()" style="position:fixed;top:15px;right:15px;z-index:10000;background:#0ea5e9;color:#fff;padding:8px 15px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:12px">KEMBALI</a>
+
+<a-scene embedded arjs="sourceType: webcam; debugUIEnabled: false;">
+  
+  <a-marker preset="hiro">
+    <a-box position="0 0 0" width="4" height="0.1" depth="2.5" color="#0f172a" opacity="0.8"></a-box>
+    
+    <!-- GATES -->
+    <a-entity id="gate-and" class="gate-parent" position="-1.2 0.3 0">
+        <a-box class="interactable" color="#0ea5e9" width="0.8" height="0.4" depth="0.6"></a-box>
+        <a-text value="AND" align="center" position="0 0.5 0" rotation="-90 0 0" width="2.5" color="#38bdf8"></a-text>
+        <a-sphere id="led-and" position="0 0.1 -0.5" radius="0.1" color="#1e293b"></a-sphere>
+    </a-entity>
+
+    <a-entity id="gate-or" class="gate-parent" position="0 0.3 0">
+        <a-box class="interactable" color="#22c55e" width="0.8" height="0.4" depth="0.6"></a-box>
+        <a-text value="OR" align="center" position="0 0.5 0" rotation="-90 0 0" width="2.5" color="#22c55e"></a-text>
+        <a-sphere id="led-or" position="0 0.1 -0.5" radius="0.1" color="#1e293b"></a-sphere>
+    </a-entity>
+
+    <a-entity id="gate-not" class="gate-parent" position="1.2 0.3 0">
+        <a-box class="interactable" color="#ef4444" width="0.8" height="0.4" depth="0.6"></a-box>
+        <a-text value="NOT" align="center" position="0 0.5 0" rotation="-90 0 0" width="2.5" color="#ef4444"></a-text>
+        <a-sphere id="led-not" position="0 0.1 -0.5" radius="0.1" color="#1e293b"></a-sphere>
+    </a-entity>
+  </a-marker>
+
+  <a-entity camera id="main-camera">
+    <!-- Center Raycaster -->
+    <a-entity id="center-raycaster" raycaster="objects: .interactable; showLine: false" position="0 0 0" rotation="0 0 0"></a-entity>
+  </a-entity>
+</a-scene>
+
+<script>
+  const debug = (msg) => { document.getElementById('debug-ui').innerHTML = "LOG: " + msg; };
+
+  window.addEventListener('markerFound', () => debug("MARKER DITEMUKAN!"));
+
+  // TOUCH TO INTERACT WITH WHATEVER IS IN CENTER
+  window.addEventListener('touchstart', (e) => {
+    const raycaster = document.getElementById('center-raycaster').components.raycaster;
+    const intersections = raycaster.intersections;
+
+    if (intersections.length > 0) {
+      const hit = intersections[0].object.el;
+      const parent = hit.closest('.gate-parent');
+      const type = parent.id.split('-')[1];
+      
+      debug("HIT: " + type.toUpperCase());
+      
+      // Visual feedback on the hit box
+      gsap.fromTo(hit.object3D.scale, {x:1, y:1, z:1}, {x:1.3, y:1.3, z:1.3, duration:0.1, yoyo:true, repeat:1});
+      
+      // Sim feedback
+      const led = document.getElementById('led-' + type);
+      led.setAttribute('color', '#ef4444');
+      setTimeout(() => led.setAttribute('color', '#1e293b'), 1000);
+    } else {
+      debug("TIDAK ADA IC DI TITIK TENGAH");
+    }
+  });
+
+  // Mouse for testing
+  window.addEventListener('mousedown', (e) => {
+    if(e.button === 0) window.dispatchEvent(new Event('touchstart'));
+  });
+</script>
+</body>
+</html>

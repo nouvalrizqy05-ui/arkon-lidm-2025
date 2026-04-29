@@ -2,7 +2,98 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: #0f172a;
-  color: white;
+@layer base {
+  :root {
+    --bg-primary: #ffffff;
+    --text-primary: #0f172a;
+    --brand-primary: #7c3aed;
+    /* Violet 600 */
+    --brand-secondary: #ec4899;
+    /* Pink 500 */
+  }
+
+  .dark {
+    --bg-primary: #020617;
+    --text-primary: #f8fafc;
+    --brand-primary: #a78bfa;
+    /* Violet 400 */
+    --brand-secondary: #f472b6;
+    /* Pink 400 */
+  }
+
+  body {
+    @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50 antialiased transition-colors duration-300;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  ::selection {
+    @apply bg-sky-500/30 text-sky-600 dark:text-sky-400;
+  }
+}
+
+@layer components {
+
+  /* Glassmorphism 2.0 */
+  .glass {
+    @apply bg-white/60 dark:bg-slate-900/40 backdrop-blur-2xl border border-slate-200/40 dark:border-white/5 shadow-xl rounded-2xl;
+  }
+  
+  .glass-strong {
+    @apply bg-white/80 dark:bg-slate-900/70 backdrop-blur-3xl border border-slate-300/40 dark:border-white/10 shadow-2xl rounded-3xl;
+  }
+
+  /* Technical Buttons */
+  .btn-primary {
+    @apply flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-white 
+           bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 
+           shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 
+           transition-all duration-300 transform active:scale-95;
+  }
+
+  .btn-secondary {
+    @apply flex items-center justify-center gap-2 px-8 py-3.5 rounded-2xl font-bold text-slate-700 dark:text-slate-300
+           bg-white dark:bg-slate-900/50 hover:bg-slate-50 dark:hover:bg-slate-800 
+           border border-slate-200 dark:border-white/5 hover:border-sky-500/50
+           shadow-sm transition-all duration-300 transform active:scale-95;
+  }
+
+  .btn-ghost {
+    @apply flex items-center justify-center gap-2 px-4 py-2 rounded-2xl font-bold text-slate-600 dark:text-slate-400 hover:text-violet-600 dark:hover:text-white hover:bg-violet-50 dark:hover:bg-white/5 transition-all duration-200;
+  }
+
+  /* Badges */
+  .badge {
+    @apply inline-flex items-center px-4 py-1 rounded-full text-xs font-bold border uppercase tracking-wider;
+  }
+
+  .badge-primary {
+    @apply bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/20;
+  }
+
+  .badge-secondary {
+    @apply bg-pink-500/10 text-pink-600 dark:text-pink-400 border-pink-500/20;
+  }
+
+  .badge-success {
+    @apply bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full bg-slate-50/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-5 py-4 text-slate-900 dark:text-white placeholder:text-slate-400 font-medium focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-500/50 transition-all duration-200;
+  }
+}
+
+/* Gradients */
+.gradient-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-600 to-pink-500;
+}
+
+.gradient-text-static {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-pink-400;
+}
+
+/* Background Blobs */
+.blob {
+  @apply absolute rounded-full blur-[100px] opacity-20 pointer-events-none;
 }
